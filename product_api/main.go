@@ -8,14 +8,10 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/Ishaandham19/env"
-	"github.com/Ishaandham19/go_microservices/product_api/handlers"
+	"github.com/Ishaandham19/go_microservices/product_api/product_api/handlers"
 )
 
-var bindAddress = env.String("BIND_ADDRESS", false, ":9090", "Bind address for the server")
-
 func main() {
-	env.Parse()
 
 	l := log.New(os.Stdout, "product-api ", log.LstdFlags)
 
@@ -24,13 +20,13 @@ func main() {
 	gh := handlers.NewGoodbye(l)
 
 	// create a new serve mux and register the handlers
-	s := http.ServeMux()
-	sm.Handler("/", hh)
-	sm.Handler("/goodbye", gh)
+	sm := http.NewServeMux()
+	sm.Handle("/", hh)
+	sm.Handle("/goodbye", gh)
 
 	// create a new server
 	s := http.Server{
-		Addr:         *bindAddress,
+		Addr:         ":9090",
 		Handler:      sm,
 		ErrorLog:     l,
 		ReadTimeout:  5 * time.Second,
@@ -42,7 +38,7 @@ func main() {
 	go func() {
 		l.Println("Starting server on port 9090")
 
-		err := s.ListenAndServer()
+		err := s.ListenAndServe()
 		if err != nil {
 			l.Printf("Error starting server: %s\n", err)
 			os.Exit(1)

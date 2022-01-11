@@ -18,7 +18,7 @@ func NewHello(l *log.Logger) *Hello {
 }
 
 // ServeHTTP implements the go http.Handler interface
-func (h *Hello) ServeHTTP(rw http.ResponseWriter, r http.Request) {
+func (h *Hello) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	h.l.Println("Hello World")
 	// read the body of req
 	b, err := ioutil.ReadAll(r.Body)
